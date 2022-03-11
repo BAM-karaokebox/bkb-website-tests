@@ -26,10 +26,7 @@ test('Click burger', async ({ page }) => {
 test('Check listed menu', async ({ page }) => {
     await page.goto('https://fr.bam-karaokebox.com/');
     const Listlocator = page.locator('.header__content--wrap');
-    await expect(Listlocator).toContainText(['Paris', 'Bordeaux', 'Madrid','évènements entreprises']);
-    await expect(Listlocator).toContainText(['La carte cadeau', 'K-POP NIGHTS', 'Le menu']);
-    await expect(Listlocator).toContainText(['BAM online', 'Le Micro Karaoké']);
-    await expect(Listlocator).toContainText(['Infos Covid-19', 'Espace Client','Contact Presse']);
+    await expect(Listlocator).toContainText(['Paris', 'Bordeaux', 'Madrid']);
     await expect(Listlocator).toContainText(['fr','en','es']);
 });
 
