@@ -1,3 +1,28 @@
+# Node / NPM
 node_modules/
+dist
+
+# Playwright
 test-results/
 playwright-report/
+
+# JEST
+coverage/
+
+# yarn
+yarn-error.log
+
+# OS Specific files
+.DS_Store
+
+# Common temp files
+\#*
+.\#*
+*~
+.*~
+
+# Common backup files
+*.bak
+
+# Common log files
+*.log
