@@ -1,3 +1,6 @@
+# hidden files
+.*
+
 # Node / NPM
 node_modules/
 dist
