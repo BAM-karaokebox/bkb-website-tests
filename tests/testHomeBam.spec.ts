@@ -7,7 +7,12 @@ const BASE_URL = 'https://fr.bam-karaokebox.com/';
 test.describe('Homepage', () => {
 
   test.beforeEach(async ({ page }) => {
+    // load homepage before each test
     await page.goto(BASE_URL);
+    // trigger a "useless" click to close temporary modals we may have
+    // at the moment on our website
+    // (e.g. special events like K-Pop nights)
+    await page.click("body");
   });
 
 
