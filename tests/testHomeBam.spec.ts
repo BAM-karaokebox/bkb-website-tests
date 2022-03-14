@@ -12,12 +12,6 @@ test('Boutton Réserver en bordure ', async ({ page }) => {
   await expect(ReserverBoutton).toContainText('Réserver');
 });
 
-test('Visibilité boutton central', async ({ page }) => {
-  await page.goto('https://fr.bam-karaokebox.com/');
-  const BouttonCentral = page.locator('.hero__booking');
-  await expect(BouttonCentral).toBeVisible();
-});
-
 test('Click burger', async ({ page }) => {
     await page.goto('https://fr.bam-karaokebox.com/');
     await page.click(".burger__wrap");
