@@ -1,22 +1,22 @@
 import { test, expect } from '@playwright/test';
+require('dotenv').config();
 
-test.describe('Page client', () => {
+test.describe('Page Client', () => {
 
   test.beforeEach(async ({ page }) => {
     //Connection en tant que client
     await page.goto('https://fr.bam-karaokebox.com/client/login');
-    await page.fill('input[name=email]', 'tomas.v@hotmail.fr');
-    await page.fill('input[name=password]','BAMbox8624');
+    await page.type('input[name=email]', process.env.AUTH_USER);
+    await page.type('input[name=password]',process.env.AUTH_PASS);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL('https://fr.bam-karaokebox.com/client/')
   });
 
-  test.afterEach(async ({ page }, testInfo) => {
+  test.afterEach(async ({ page }) => {
     page.close()
   });
 
-  test('Page Client', async ({ page }) => {
-    //Vérification(Menu client)
+  test('Page Information', async ({ page }) => {
     const Clientlocator = page.locator('id=client');
     await expect(Clientlocator).toBeVisible();
     const Menulocator = page.locator('.client-menu');
