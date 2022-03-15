@@ -9,10 +9,11 @@ test.describe('Homepage', () => {
   test.beforeEach(async ({ page }) => {
     // load homepage before each test
     await page.goto(BASE_URL);
-    // trigger a "useless" click to close temporary modals we may have
-    // at the moment on our website
-    // (e.g. special events like K-Pop nights)
-    await page.click("body");
+    // close modal if present
+    const modalCloseButton = await page.$$('.modal-close');
+    if (modalCloseButton) {
+      await page.click('.modal-close');
+    }
   });
 
 
@@ -37,24 +38,24 @@ test.describe('Homepage', () => {
   });
 
   test('About Bam KaraokeBox', async ({ page }) => {
-    const AboutUsText = page.locator('.push__wrap');
+    const AboutUsText = page.locator('#about .push__wrap');
     await expect(AboutUsText).toBeVisible();
-    const AboutUsImage = page.locator('.push__image');
+    const AboutUsImage = page.locator('#about .push__image');
     await expect(AboutUsImage).toBeVisible();
   });
 
   test('Les différents lieux', async ({ page }) => {
-    const AboutUsText = page.locator('id=places');
-    await expect(AboutUsText).toBeVisible();
+    const placesText = page.locator('#places');
+    await expect(placesText).toBeVisible();
   });
 
   test('Social Container', async ({ page }) => {
-    const sociallocator = page.locator('id=press');
+    const sociallocator = page.locator('#press');
     await expect(sociallocator).toBeVisible();
   });
 
   test('Instagram Container', async ({ page }) => {
-    const instagramlocator = page.locator('id=instagram');
+    const instagramlocator = page.locator('#instagram');
     await expect(instagramlocator).toBeVisible();
   });
 
