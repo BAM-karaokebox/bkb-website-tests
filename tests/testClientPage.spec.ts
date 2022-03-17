@@ -10,7 +10,7 @@ test.describe('Page Client', () => {
     await page.goto( BASE_URL + 'login');
     await page.type('input[name=email]', process.env.AUTH_USER);
     await page.type('input[name=password]',process.env.AUTH_PASS);
-    await page.keyboard.press("Enter");
+    await page.keyboard.press('Enter');
     await expect(page).toHaveURL(BASE_URL)
   });
 
