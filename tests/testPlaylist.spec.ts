@@ -25,7 +25,7 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
       const SearchContainer = page.locator('.catalog__search');
       await expect(SearchContainer).toBeVisible();
 
-      // Saisi de la chanson souhaité
+      // Saisie de la chanson souhaité
       await page.fill('[type="search"]', 'Au dd');
       await page.keyboard.press('Enter');
 
@@ -37,7 +37,7 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
       const Numbersong = await song.count();
       console.log('Nombre de musique correspondant a la recherche');
       console.log(Numbersong);
-      if (Numbersong == 0) {
+      if (Numbersong === 0) {
         return ErrorEvent;
       }
       });
@@ -60,7 +60,7 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
       const Numbersong = await song.count();
       console.log('Nombre de musique correspondant a la recherche erroné');
       console.log(Numbersong);
-      if (Numbersong != 0) {
+      if (Numbersong !== 0) {
         return ErrorEvent;
       }
     });
@@ -101,7 +101,7 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
       const NumberSongPlaylist = await song.count();
       console.log('Musique dans la playlist après ajout');
       console.log(NumberSongPlaylist);
-      if ( NumberSongPlaylist == 0 ) {
+      if ( NumberSongPlaylist === 0 ) {
         return ErrorEvent;
       }
     });
@@ -130,7 +130,7 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
       const NumberSongPlaylist = await song.count();
       console.log("Nombre de musique dans la playlist après l'avoir vider");
       console.log(NumberSongPlaylist);
-      if ( NumberSongPlaylist != 0 ) {
+      if ( NumberSongPlaylist !== 0 ) {
         return ErrorEvent;
       }
     });

@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const BASE_URL = 'https://fr.bam-karaokebox.com/client/';
 
