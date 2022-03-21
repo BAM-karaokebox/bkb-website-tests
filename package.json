@@ -17,5 +17,10 @@
   },
   "dependencies": {
     "dotenv": "^16.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
   }
 }
