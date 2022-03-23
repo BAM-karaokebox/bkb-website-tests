@@ -122,13 +122,13 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
       await expect(ButtonReset).toBeVisible();
       await page.click('#catalog .my-playlist__wrap .u-txt-right .button-reset');
 
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(5000);
 
       // Vérification que la playlist soit vidé
       await page.waitForSelector('#catalog .my-playlist__wrap .catalog__songs--client', {timeout: 20000});
       const song = page.locator('.my-playlist__wrap .catalog__songs--client .flip-list .song');
       const NumberSongPlaylist = await song.count();
-      console.log("Nombre de musique dans la playlist après l'avoir vider");
+      console.log("Nombre de musique dans la playlist après l'avoir vidé");
       console.log(NumberSongPlaylist);
       if ( NumberSongPlaylist !== 0 ) {
         return ErrorEvent;
