@@ -1,21 +1,23 @@
 import { test, expect } from '@playwright/test';
-require('dotenv').config();
+import dotenv from 'dotenv';
 
-const BASE_URL = 'https://fr.bam-karaokebox.com/client/'
+dotenv.config();
+
+const BASE_URL = 'https://fr.bam-karaokebox.com/client/';
 
 test.describe('Page Client', () => {
 
   test.beforeEach(async ({ page }) => {
-    //Connection en tant que client
+    // Connection en tant que client
     await page.goto( BASE_URL + 'login');
     await page.type('input[name=email]', process.env.AUTH_USER);
-    await page.type('input[name=password]',process.env.AUTH_PASS);
+    await page.type('input[name=password]', process.env.AUTH_PASS);
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(BASE_URL)
+    await expect(page).toHaveURL(BASE_URL);
   });
 
   test.afterEach(async ({ page }) => {
-    page.close()
+    page.close();
   });
 
   test('Page Information', async ({ page }) => {
