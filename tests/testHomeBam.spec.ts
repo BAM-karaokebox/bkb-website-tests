@@ -8,9 +8,10 @@ test.describe('Homepage', () => {
     // load homepage before each test
     await page.goto(BASE_URL);
     // close modal container
-    const modalCloseButton = await page.$$('.modal-close');
-    if (modalCloseButton) {
-      await page.click('.modal-close');
+    try {
+      await page.waitForSelector('.modal-close').then((btn) => page.click('.modal-close'));
+    } catch (ignoredError) {
+        /* no modal to bypass */
     }
   });
 
