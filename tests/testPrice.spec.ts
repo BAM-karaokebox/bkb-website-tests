@@ -3,270 +3,68 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const LOG_URL = 'https://backend.bam-karaokebox.com/index.php/login_backend';
+const BASE_URL = 'https://backend.bam-karaokebox.com/index.php/login_backend';
 
-test.describe('Vérification des prix', () => {
+const VENUES = [
+  'richer',
+  'sentier',
+  'parmentier',
+  'chartrons',
+  'recoletos',
+  'madeleine',
+  'etoile',
+];
 
-    test.beforeEach(async ({ page }) => {
-      // Connection en tant que client
-      await page.goto( LOG_URL);
-      await page.type('input[name=_username]', process.env.AUTH_USER_BACK );
-      await page.type('input[name=_password]', process.env.AUTH_PASS_BACK );
-      await page.keyboard.press('Enter');
-      await expect(page).toHaveURL('https://backend.bam-karaokebox.com/index.php/_backend/calendar');
-    });
+const ID_VENUES = [
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+];
 
-    test('Parmentier', async ({ page }) => {
+const NumberPage = [
+    '0',
+    '0',
+    '2',
+    '2',
+    '0',
+    '1',
+    '1', 
+]
 
-      await page.locator('select[name="calendar_place"]').selectOption('4');
+const PriceVenues = [
+  '5',
+  '5',
+  '5',
+  '3',
+  '4',
+  '5',
+  '5', 
+]
 
-      {test.setTimeout(180000); }
+const checkPriceforeachVenues = async (page, venuePath) => {
+  await page.goto(BASE_URL);
+  await page.type('input[name=_username]', process.env.AUTH_USER_BACK );
+  await page.type('input[name=_password]', process.env.AUTH_PASS_BACK );
+  await page.keyboard.press('Enter');
 
-      // Parcours le calendrier
-      for (let d = 0; d < 2; d++) {
+  await page.locator('select[name="calendar_place"]').selectOption(venuePath);
 
-        // Parcous les pages de réservation de gauche à droite
-        for (let p = 0; p < 3; p++) {
+  {test.setTimeout(180000); }
 
-          await page.waitForSelector('.booking .calendar .screen');
+  const Erreur=[]
+  // browse the calendar
+  for (let d = 0; d < 2; d++) {
 
-          // Créer une liste composée des noms des salles
-          const RoomSlot = await page.evaluate(() => {
-            const ListeSalle = [];
-            const NumberRoom = document.querySelectorAll('.screen').length;
-            for (let j = 0; j < NumberRoom; j++) {
-                const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
-                if (NumberSlot !== 0) {
-                    for (let i = 0; i < NumberSlot; i++) {
-                        ListeSalle.push( document.querySelector('div.slot.available input').dataset.bookingDate + ' '
-                        + document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue);
-                    }
-                }
-            }
-            return  ListeSalle;
-        });
-
-          // Créer une liste composée des horraires des séances
-          const Creneau = await page.evaluate(() => {
-            const ListeSeance = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot; i++) {
-              ListeSeance.push(document.querySelectorAll('div.slot.available')[i].childNodes[0].nodeValue);
-            }
-            return ListeSeance;
-          });
-
-          // Créer une liste composée des prix des créneaux
-          const PrixSalle = await page.evaluate(() => {
-            const Prix = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot ; i++) {
-              Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[2].nodeValue);
-            }
-            return Prix;
-          });
-
-          // Créer une liste composé des prix par personne des créneaux
-          const PrixPerson = await page.evaluate(() => {
-            const Prix = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot; i++) {
-              Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[4].nodeValue);
-            }
-            return Prix;
-          });
-
-          // Vérification des prix par personne à partir de 14h
-          for (let i = 0; i < PrixPerson.length; i++) {
-            const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-            if (parseInt(PrixPerson[i], 10) < 5 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-              throw new Error(
-                'Parmentier ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-              );
-            }
-          }
-
-          // Tant qu'on est pas à la dernier page on clique sur le bouton next room
-          if (p < 2) {
-            await page.click('.btn-next-room');
-          }
-
-          // Permet de savoir que l'on est à la derniere page afin de changer de jour
-          if (p === 2) {
-            await page.click('.col-md-5 .btn-next');
-
-            // Parcous les pages de reservation de droite à gauche afin de retourner à la premiere page
-            for (let l = 0; l < 3; l++) {
-
-              await page.waitForSelector('.booking .calendar .screen');
-
-              // Tant qu'on est pas à la premiere page on clique sur le bouton prev room
-              if (l < 2) {
-                await page.click('.btn-prev-room');
-              }
-            }
-          }
-        }
-      }
-  });
-
-    test('Chartrons', async ({ page }) => {
-
-    await page.locator('select[name="calendar_place"]').selectOption('5');
-
-    {test.setTimeout(180000); }
-
-    for (let d = 0; d < 2; d++) {
-
-      for (let p = 0; p < 3; p++) {
-
-        await page.waitForSelector('.booking .calendar .screen');
-
-        const RoomSlot = await page.evaluate(() => {
-          const ListeSalle = [];
-          const NumberRoom = document.querySelectorAll('.screen').length;
-          for (let j = 0; j < NumberRoom; j++) {
-              const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
-              if (NumberSlot !== 0) {
-                  for (let i = 0; i < NumberSlot; i++) {
-                      ListeSalle.push( document.querySelector('div.slot.available input').dataset.bookingDate + ' '
-                      + document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue);
-                  }
-              }
-          }
-          return  ListeSalle;
-      });
-
-        const Creneau = await page.evaluate(() => {
-          const ListeSeance = [];
-          const NumberSlot = document.querySelectorAll('div.slot.available').length;
-          for (let i = 0; i < NumberSlot; i++) {
-            ListeSeance.push(document.querySelectorAll('div.slot.available')[i].childNodes[0].nodeValue);
-          }
-          return ListeSeance;
-        });
-
-        const PrixSalle = await page.evaluate(() => {
-          const Prix = [];
-          const NumberSlot = document.querySelectorAll('div.slot.available').length;
-          for (let i = 0; i < NumberSlot ; i++) {
-            Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[2].nodeValue);
-          }
-          return Prix;
-        });
-
-        const PrixPerson = await page.evaluate(() => {
-          const Prix = [];
-          const NumberSlot = document.querySelectorAll('div.slot.available').length;
-          for (let i = 0; i < NumberSlot; i++) {
-            Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[4].nodeValue);
-          }
-          return Prix;
-        });
-
-        for (let i = 0; i < PrixPerson.length; i++) {
-          const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-          if (parseInt(PrixPerson[i], 10) < 3 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-            throw new Error(
-              'Chartrons ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-            );
-          }
-        }
-
-        if (p < 2) {
-          await page.click('.btn-next-room');
-        }
-
-        if (p === 2) {
-          await page.click('.col-md-5 .btn-next');
-
-          for (let l = 0; l < 3; l++) {
-
-            await page.waitForSelector('.booking .calendar .screen');
-
-            if (l < 2) {
-              await page.click('.btn-prev-room');
-            }
-          }
-        }
-      }
-    }
-  });
-
-    test('Sentier', async ({ page }) => {
-
-    await page.locator('select[name="calendar_place"]').selectOption('3');
-
-    {test.setTimeout(180000); }
-
-    for (let d = 0; d < 2; d++) {
+    // browse reservation page from the left to the right
+    for (let p = 0; p < parseInt(NumberPage[venuePath - 2],10) + 1; p++) {
 
       await page.waitForSelector('.booking .calendar .screen');
 
-      const RoomSlot = await page.evaluate(() => {
-        const ListeSalle = [];
-        const nbssalle = document.querySelectorAll('.screen').length;
-        for (let j = 0; j < nbssalle; j++) {
-            const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
-            if (NumberSlot !== 0) {
-                for (let i = 0; i < NumberSlot; i++) {
-                    ListeSalle.push( document.querySelector('div.slot.available input').dataset.bookingDate + ' '
-                    + document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue);
-                }
-            }
-        }
-        return  ListeSalle;
-      });
-
-      const Creneau = await page.evaluate(() => {
-        const ListeSeance = [];
-        const NumberSlot = document.querySelectorAll('div.slot.available').length;
-        for (let i = 0; i < NumberSlot; i++) {
-          ListeSeance.push(document.querySelectorAll('div.slot.available')[i].childNodes[0].nodeValue);
-        }
-        return ListeSeance;
-      });
-
-      const PrixSalle = await page.evaluate(() => {
-        const Prix = [];
-        const NumberSlot = document.querySelectorAll('div.slot.available').length;
-        for (let i = 0; i < NumberSlot ; i++) {
-          Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[2].nodeValue);
-        }
-        return Prix;
-      });
-
-      const PrixPerson = await page.evaluate(() => {
-        const Prix = [];
-        const NumberSlot = document.querySelectorAll('div.slot.available').length;
-        for (let i = 0; i < NumberSlot; i++) {
-          Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[4].nodeValue);
-        }
-        return Prix;
-      });
-
-      for (let i = 0; i < PrixPerson.length; i++) {
-        const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-        if (parseInt(PrixPerson[i], 10) < 5 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-          throw new Error(
-            'Sentier ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-          );
-        }
-      }
-      await page.click('.col-md-5 .btn-next');
-    }
-  });
-
-    test('Richer', async ({ page }) => {
-
-    await page.locator('select[name="calendar_place"]').selectOption('2');
-
-    {test.setTimeout(180000); }
-
-    for (let d = 0; d < 3; d++) {
-
-      await page.waitForSelector('.booking .calendar .screen');
-
+      // Create a list compose of the name of room and date of each available slot
       const RoomSlot = await page.evaluate(() => {
         const ListeSalle = [];
         const NumberRoom = document.querySelectorAll('.screen').length;
@@ -280,8 +78,9 @@ test.describe('Vérification des prix', () => {
             }
         }
         return  ListeSalle;
-      });
+    });
 
+      // Create a list compose of hours of each available slot
       const Creneau = await page.evaluate(() => {
         const ListeSeance = [];
         const NumberSlot = document.querySelectorAll('div.slot.available').length;
@@ -291,6 +90,7 @@ test.describe('Vérification des prix', () => {
         return ListeSeance;
       });
 
+      // Create a list compose of price of each available slot
       const PrixSalle = await page.evaluate(() => {
         const Prix = [];
         const NumberSlot = document.querySelectorAll('div.slot.available').length;
@@ -300,6 +100,7 @@ test.describe('Vérification des prix', () => {
         return Prix;
       });
 
+      // Create a list compose of price per person of each available slot
       const PrixPerson = await page.evaluate(() => {
         const Prix = [];
         const NumberSlot = document.querySelectorAll('div.slot.available').length;
@@ -309,245 +110,44 @@ test.describe('Vérification des prix', () => {
         return Prix;
       });
 
+      // Verify the price by person after 14 hours and create the list Erreur
       for (let i = 0; i < PrixPerson.length; i++) {
         const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-        if (parseInt(PrixPerson[i], 10) < 5 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-          throw new Error(
-            'Richer ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-          );
+        if (parseInt(PrixPerson[i], 10) < parseInt(PriceVenues[venuePath - 2]) && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
+          VENUES[venuePath - 2] + ' ' + Result[0][i] + Result[1][i] + ' ' + Result[2][i] + Result[3][i],
+          Erreur.push(VENUES[venuePath - 2]  + ' ' + Result[0][i] + Result[1][i] + ' ' + Result[2][i] + Result[3][i] + '\n'+ '\n')
+          }
         }
+
+      // Until we are at the last page, we click on next buton
+      if (p < parseInt(NumberPage[venuePath - 2],10)) {
+        await page.click('.btn-next-room');
       }
-      await page.click('.col-md-5 .btn-next');
-    }
-  });
 
-    test('Etoile', async ({ page }) => {
-
-      await page.locator('select[name="calendar_place"]').selectOption('8');
-
-      {test.setTimeout(180000); }
-
-      for (let d = 0; d < 2; d++) {
-
-        for (let p = 0; p < 2; p++) {
-
-          await page.waitForSelector('.booking .calendar .screen');
-
-          const RoomSlot = await page.evaluate(() => {
-            const ListeSalle = [];
-            const NumberRoom = document.querySelectorAll('.screen').length;
-            for (let j = 0; j < NumberRoom; j++) {
-                const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
-                if (NumberSlot !== 0) {
-                    for (let i = 0; i < NumberSlot; i++) {
-                        ListeSalle.push( document.querySelector('div.slot.available input').dataset.bookingDate + ' '
-                        + document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue);
-                    }
-                }
-            }
-            return  ListeSalle;
-          });
-
-          const Creneau = await page.evaluate(() => {
-            const ListeSeance = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot; i++) {
-              ListeSeance.push(document.querySelectorAll('div.slot.available')[i].childNodes[0].nodeValue);
-            }
-            return ListeSeance;
-          });
-
-          const PrixSalle = await page.evaluate(() => {
-            const Prix = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot ; i++) {
-              Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[2].nodeValue);
-            }
-            return Prix;
-          });
-
-          const PrixPerson = await page.evaluate(() => {
-            const Prix = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot; i++) {
-              Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[4].nodeValue);
-            }
-            return Prix;
-          });
-
-          for (let i = 0; i < PrixPerson.length; i++) {
-            const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-            if (parseInt(PrixPerson[i], 10) < 5 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-              throw new Error(
-                'Etoile ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-              );
-            }
-          }
-
-          if (p < 1) {
-            await page.click('.btn-next-room');
-          }
-
-          if (p === 1) {
-            await page.click('.col-md-5 .btn-next');
-
-            for (let l = 0; l < 2; l++) {
-
-              await page.waitForSelector('.booking .calendar .screen');
-
-              if (l < 1) {
-                await page.click('.btn-prev-room');
-              }
-            }
-          }
-        }
-      }
-    });
-
-    test('Madeleine', async ({ page }) => {
-
-      await page.locator('select[name="calendar_place"]').selectOption('7');
-
-      {test.setTimeout(180000); }
-
-      for (let d = 0; d < 2; d++) {
-
-        for (let p = 0; p < 2; p++) {
-
-          await page.waitForSelector('.booking .calendar .screen');
-
-          const RoomSlot = await page.evaluate(() => {
-            const ListeSalle = [];
-            const NumberRoom = document.querySelectorAll('.screen').length;
-            for (let j = 0; j < NumberRoom; j++) {
-                const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
-                if (NumberSlot !== 0) {
-                    for (let i = 0; i < NumberSlot; i++) {
-                        ListeSalle.push( document.querySelector('div.slot.available input').dataset.bookingDate + ' '
-                        + document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue);
-                    }
-                }
-            }
-            return  ListeSalle;
-          });
-
-          const Creneau = await page.evaluate(() => {
-            const ListeSeance = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot; i++) {
-              ListeSeance.push(document.querySelectorAll('div.slot.available')[i].childNodes[0].nodeValue);
-            }
-            return ListeSeance;
-          });
-
-          const PrixSalle = await page.evaluate(() => {
-            const Prix = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot ; i++) {
-              Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[2].nodeValue);
-            }
-            return Prix;
-          });
-
-          const PrixPerson = await page.evaluate(() => {
-            const Prix = [];
-            const NumberSlot = document.querySelectorAll('div.slot.available').length;
-            for (let i = 0; i < NumberSlot; i++) {
-              Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[4].nodeValue);
-            }
-            return Prix;
-          });
-
-          for (let i = 0; i < PrixPerson.length; i++) {
-            const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-            if (parseInt(PrixPerson[i], 10) < 5 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-              throw new Error(
-                'Madeleine ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-              );
-            }
-          }
-
-          if (p < 1) {
-            await page.click('.btn-next-room');
-          }
-
-          if (p === 1) {
-            await page.click('.col-md-5 .btn-next');
-
-            for (let l = 0; l < 2; l++) {
-
-              await page.waitForSelector('.booking .calendar .screen');
-
-              if (l < 1) {
-                await page.click('.btn-prev-room');
-              }
-            }
-          }
-        }
-      }
-    });
-
-    test('Recoletos', async ({ page, context }) => {
-
-      await page.locator('select[name="calendar_place"]').selectOption('6');
-
-      {test.setTimeout(180000); }
-
-      for (let d = 0; d < 2; d++) {
-
-        await page.waitForSelector('.booking .calendar .screen');
-
-        const RoomSlot = await page.evaluate(() => {
-          const ListeSalle = [];
-          const NumberRoom = document.querySelectorAll('.screen').length;
-          for (let j = 0; j < NumberRoom; j++) {
-              const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
-              if (NumberSlot !== 0) {
-                  for (let i = 0; i < NumberSlot; i++) {
-                      ListeSalle.push( document.querySelector('div.slot.available input').dataset.bookingDate + ' '
-                      + document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue);
-                  }
-              }
-          }
-          return  ListeSalle;
-        });
-
-        const Creneau = await page.evaluate(() => {
-          const ListeSeance = [];
-          const NumberSlot = document.querySelectorAll('div.slot.available').length;
-          for (let i = 0; i < NumberSlot; i++) {
-            ListeSeance.push(document.querySelectorAll('div.slot.available')[i].childNodes[0].nodeValue);
-          }
-          return ListeSeance;
-        });
-
-        const PrixSalle = await page.evaluate(() => {
-          const Prix = [];
-          const NumberSlot = document.querySelectorAll('div.slot.available').length;
-          for (let i = 0; i < NumberSlot ; i++) {
-            Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[2].nodeValue);
-          }
-          return Prix;
-        });
-
-        const PrixPerson = await page.evaluate(() => {
-          const Prix = [];
-          const NumberSlot = document.querySelectorAll('div.slot.available').length;
-          for (let i = 0; i < NumberSlot; i++) {
-            Prix.push(document.querySelectorAll('div.slot.available')[i].childNodes[4].nodeValue);
-          }
-          return Prix;
-        });
-
-        for (let i = 0; i < PrixPerson.length; i++) {
-          const Result = [RoomSlot, Creneau , PrixSalle , PrixPerson];
-          if (parseInt(PrixPerson[i], 10) < 4 && parseInt(Creneau[i][0] + Creneau[i][1], 10) >= 14 ) {
-            throw new Error(
-              'Recoletos ' + Result[0][i] + Result[1][i] + Result[2][i] + Result[3][i],
-            );
-          }
-        }
+      // Allows to know that we are on the last page and to go on the next day on the calendar
+      if (p === parseInt(NumberPage[venuePath - 2],10)) {
         await page.click('.col-md-5 .btn-next');
+
+        // Allows to go to the first page of reservation before to start again the verification of price
+        for (let l = 0; l < parseInt(NumberPage[venuePath - 2],10) + 1; l++) {
+
+          await page.waitForSelector('.booking .calendar .screen');
+
+          // Until we are not on the first page, we click on the prev buton
+          if (l < parseInt(NumberPage[venuePath - 2],10)) {
+            await page.click('.btn-prev-room');
+          }
+        }
       }
-    });
+    }
+    if (Erreur.length !==0){
+      throw new Error(
+        Erreur
+      )
+    }
+  }
+};
+
+ID_VENUES.forEach(venueName => {
+  test(`Venue: ${venueName}`, async ({ page }) => checkPriceforeachVenues(page, `${venueName}`));
 });
