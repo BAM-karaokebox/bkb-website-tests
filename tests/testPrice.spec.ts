@@ -133,7 +133,7 @@ const checkPriceforeachVenues = async (page, venuePath) => {
         checkPrice(page, venuePath);
 
         await page.click('.col-md-5 .btn-next');
-        await page.waitForSelector('.booking .calendar .screen');
+
         while (await page.isVisible('.btn-prev-room', {strict: true})) {
           await page.click('.btn-prev-room');
           await page.waitForSelector('.booking .calendar .screen');
