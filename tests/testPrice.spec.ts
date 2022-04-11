@@ -107,7 +107,7 @@ const checkPriceforeachVenues = async (page, venuePath) => {
 
     let day = 0;
     // browse the calendar
-    while (day < 2) {
+    while (day < 28) {
       await page.waitForSelector('.booking .calendar .screen');
 
       // dedicated to site where there only one page of reservation
