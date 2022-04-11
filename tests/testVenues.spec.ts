@@ -13,7 +13,8 @@ const VENUES = [
 ];
 
 const checkVenuePageLayout = async (page, venuePath) => {
-  await page.goto(BASE_URL + venuePath);
+  await page.goto(BASE_URL + venuePath + '?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring');
+  page.waitForTimeout(20000)
   const Presentationlocator = page.locator('.hero');
   await expect(Presentationlocator).toBeVisible();
   const Roomlocator = page.locator('.rooms');
