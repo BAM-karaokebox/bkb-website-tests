@@ -123,7 +123,7 @@ const checkPrice = async (page: any, venuePath: any) => {
 const checkPriceforeachVenues = async (page: any, venuePath: any) => {
     { test.setTimeout(180000); }
 
-    await page.locator('select[name="calendar_place"]').selectOption(/*JSON.stringify(venuePath.id)*/'6');
+    await page.locator('select[name="calendar_place"]').selectOption(JSON.stringify(venuePath.id));
     await page.waitForSelector('.booking .calendar .screen');
 
     // browse the calendar
