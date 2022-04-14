@@ -8,32 +8,32 @@ const BASE_URL = 'https://backend.bam-karaokebox.com/index.php/login_backend';
 const VENUES = [{
   name: 'Richer',
   id: 2,
-  floorPrice: 10,
+  floorPrice: 5,
 }, {
   name: 'Sentier',
   id: 3,
-  floorPrice: 10,
+  floorPrice: 5,
 }, {
   name: 'Parmentier',
   id: 4,
-  floorPrice: 10,
+  floorPrice: 5,
 }, {
   name: 'Chartrons',
   id: 5,
-  floorPrice: 6,
+  floorPrice: 3,
 }, {
   name: 'Recoletos',
   id: 6,
-  floorPrice: 8,
+  floorPrice: 4,
 }, {
   name: 'Madeleine',
   id: 7,
-  floorPrice: 10,
+  floorPrice: 5,
 },
 {
   name: 'Etoile',
   id: 8,
-  floorPrice: 10,
+  floorPrice: 5,
 }];
 
 const BOOKING_TIME_START = 14; // bookings start at 2PM
@@ -65,20 +65,37 @@ const checkPrice = async (page: any, venuePath: any) => {
   const RoomSlot = await page.evaluate(() => {
     const ListeSalle = [];
     const NumberRoom = document.querySelectorAll('.screen').length;
+    let date;
+    date = document.querySelectorAll('div.slot input')[0].dataset.bookingDate;
+    date = date.substring(6, 10) + '/' + date.substring(0, 2) + '/' + date.substring(3, 5);
     for (let j = 0; j < NumberRoom; j++) {
+      const RoomName = document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue;
       const NumberSlot = document.querySelectorAll('div.places')[j].querySelectorAll('div.available').length;
       if (NumberSlot !== 0) {
         for (let i = 0; i < NumberSlot; i++) {
-          let date;
-          date = document.querySelectorAll('div.slot input')[0].dataset.bookingDate;
-          date = date.substring(6, 10) + '/' + date.substring(0, 2) + '/' + date.substring(3, 5);
-          ListeSalle.push(document.querySelectorAll('div.capacity')[j].childNodes[0].nodeValue
-            + date);
+          ListeSalle.push(RoomName + date);
         }
       }
     }
     return ListeSalle;
   });
+
+  // Create a list compose of slot duration
+  const HourSlot = await page.evaluate(() => {
+    const ListeTime = [];
+    const NumberSlot = document.querySelectorAll('div.slot.available').length;
+    for (let i = 0; i < NumberSlot; i++) {
+      let StartHours = document.querySelectorAll('div.available input')[i].dataset.bookingFrom
+      let EndHours = document.querySelectorAll('div.available input')[i].dataset.bookingTo
+      StartHours = parseInt(StartHours[0] + StartHours[1] + StartHours[3] + StartHours[4] , 10)
+      EndHours = parseInt(EndHours[0] + EndHours[1] + EndHours[3] + EndHours[4] , 10) 
+      if (EndHours < 1000 && parseInt(StartHours,10) > 1400){
+        EndHours = EndHours + 2400
+      }
+      ListeTime.push(JSON.stringify((EndHours - StartHours)/100));
+    }
+    return (ListeTime);
+    });
 
   // Create a list compose of hours of each available slot
   await getdata(page, 0);
@@ -95,10 +112,12 @@ const checkPrice = async (page: any, venuePath: any) => {
   // Verify the price by person between 14 hours and 3 hours then it create the list Erreur
   for (let i = 0; i < PrixPerson.length; i++) {
     const Result = [RoomSlot, Creneau, PrixSalle, PrixPerson];
-    if (parseInt(PrixPerson[i], 10) < parseInt(venuePath.floorPrice, 10) &&
-    (parseInt(Creneau[i][0] + Creneau[i][1], 10) >= BOOKING_TIME_START || parseInt(Creneau[i][0] + Creneau[i][1], 10) <= BOOKING_TIME_END )) {
-      Erreur.push('Error detected at ' + venuePath.name + ':' + ' ' + Result[0][i] + ' ' + Result[1][i] + ' for ' + Result[2][i] +
-      'and ' + Result[3][i] + ',' + '\n' + ' we expect to have a price superior at ' + parseInt(venuePath.floorPrice, 10) + '€ per person' + '\n' + '\n');
+    const pricePerPerson = parseInt(PrixPerson[i], 10);
+    const venueFloorPrice = parseInt(venuePath.floorPrice, 10);
+    const sessionTime = HourSlot[i][0]
+    if (pricePerPerson < venueFloorPrice * sessionTime) {
+      Erreur.push(`\n Error detected at ${venuePath.name} : ${Result[0][i]} ${Result[1][i]} for ${Result[2][i]} and ${Result[3][i]}
+      we expect to have a price superior at ${venueFloorPrice}€ per person \n`);
     }
   }
 };
@@ -106,7 +125,7 @@ const checkPrice = async (page: any, venuePath: any) => {
 const checkPriceforeachVenues = async (page: any, venuePath: any) => {
     { test.setTimeout(180000); }
 
-    await page.locator('select[name="calendar_place"]').selectOption(JSON.stringify(venuePath.id));
+    await page.locator('select[name="calendar_place"]').selectOption(/*JSON.stringify(venuePath.id)*/'6');
     await page.waitForSelector('.booking .calendar .screen');
 
     // browse the calendar
