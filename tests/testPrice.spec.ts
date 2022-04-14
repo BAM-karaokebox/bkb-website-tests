@@ -36,7 +36,6 @@ const VENUES = [{
   floorPrice: 5,
 }];
 
-
 let listdata: any = [];
 const Erreur: any = [];
 let Creneau: string[];
@@ -83,14 +82,14 @@ const checkPrice = async (page: any, venuePath: any) => {
     const ListeTime = [];
     const NumberSlot = document.querySelectorAll('div.slot.available').length;
     for (let i = 0; i < NumberSlot; i++) {
-      let StartHours = document.querySelectorAll('div.available input')[i].dataset.bookingFrom
-      let EndHours = document.querySelectorAll('div.available input')[i].dataset.bookingTo
-      StartHours = parseInt(StartHours[0] + StartHours[1] + StartHours[3] + StartHours[4] , 10)
-      EndHours = parseInt(EndHours[0] + EndHours[1] + EndHours[3] + EndHours[4] , 10) 
-      if (EndHours < 1000 && parseInt(StartHours,10) > 1400){
-        EndHours = EndHours + 2400
+      let StartHours = document.querySelectorAll('div.available input')[i].dataset.bookingFrom;
+      let EndHours = document.querySelectorAll('div.available input')[i].dataset.bookingTo;
+      StartHours = parseInt(StartHours[0] + StartHours[1] + StartHours[3] + StartHours[4] , 10);
+      EndHours = parseInt(EndHours[0] + EndHours[1] + EndHours[3] + EndHours[4] , 10);
+      if (EndHours < 1000 && parseInt(StartHours, 10) > 1400) {
+        EndHours = EndHours + 2400;
       }
-      ListeTime.push(JSON.stringify((EndHours - StartHours)/100));
+      ListeTime.push(JSON.stringify((EndHours - StartHours) / 100));
     }
     return (ListeTime);
     });
@@ -112,10 +111,10 @@ const checkPrice = async (page: any, venuePath: any) => {
     const Result = [RoomSlot, Creneau, PrixSalle, PrixPerson];
     const pricePerPerson = parseInt(PrixPerson[i], 10);
     const venueFloorPrice = parseInt(venuePath.floorPrice, 10);
-    const sessionTime = HourSlot[i][0]
+    const sessionTime = HourSlot[i][0];
     if (pricePerPerson < venueFloorPrice * sessionTime) {
       Erreur.push(`\n Error detected at ${venuePath.name} : ${Result[0][i]} ${Result[1][i]} for ${Result[2][i]} and ${Result[3][i]}
-      we expect to have a price superior at ${venueFloorPrice}€ per person \n`);
+      we expect to have a price superior at ${venueFloorPrice}€ per person per hour \n`);
     }
   }
 };
