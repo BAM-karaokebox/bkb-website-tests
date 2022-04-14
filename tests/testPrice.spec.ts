@@ -36,8 +36,6 @@ const VENUES = [{
   floorPrice: 5,
 }];
 
-const BOOKING_TIME_START = 14; // bookings start at 2PM
-const BOOKING_TIME_END = 3;  // bookings end at 3AM the next day
 
 let listdata: any = [];
 const Erreur: any = [];
