@@ -28,7 +28,7 @@ jobs:
         retention-days: 30
     - name: Report Status
       if: always()
-      uses: tomas/notify-slack-action@v1
+      uses: actions/notify-slack-action@v1
       with:
         status: ${{ job.status  }}
         notify_when: 'failure'
