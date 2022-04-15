@@ -31,7 +31,7 @@ jobs:
         retention-days: 30
     - name: Report Status
       if: always()
-      uses: BAM-karaokebox/website-tests@1
+      uses: BAM-karaokebox/website-tests@
       with:
         status: ${{ job.status  }}
         notify_when: 'failure'
