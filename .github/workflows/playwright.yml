@@ -23,6 +23,8 @@ jobs:
       env:
         AUTH_USER: ${{ secrets.AUTH_USER }}
         AUTH_PASS: ${{ secrets.AUTH_PASS }}
+        AUTH_USER: ${{ secrets.AUTH_USER_BACK }}
+        AUTH_PASS: ${{ secrets.AUTH_PASS_BACK }}
     - uses: actions/upload-artifact@v2
       if: always()
       with:
@@ -36,6 +38,6 @@ jobs:
         status: ${{ job.status  }}
         notify_when: 'failure'
         notification_title: '{workflow} has {status_message}'
-        message_format: ' {status_message} in <{repo_url|{repo}>'
+        message_format: ' {status_message} in {repo}'
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_URL  }}
