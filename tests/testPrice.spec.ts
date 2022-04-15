@@ -114,7 +114,7 @@ const checkPrice = async (page: any, venuePath: any) => {
     const sessionTime = HourSlot[i][0];
     if (pricePerPerson < venueFloorPrice * sessionTime) {
       Erreur.push(`\n Error detected at ${venuePath.name} : ${Result[0][i]} ${Result[1][i]} for ${Result[2][i]} and ${Result[3][i]}
-      we expect to have a price superior at ${venueFloorPrice}€ per person per hour \n`);
+       we expect to have a price superior at ${venueFloorPrice * sessionTime}€ per person \n`);
     }
   }
 };
@@ -155,8 +155,9 @@ const checkPriceforeachVenues = async (page: any, venuePath: any) => {
         await page.waitForSelector('.btn-prev-room');
 
         while (await page.isVisible('.btn-prev-room', {strict: true})) {
+          await page.waitForSelector('.btn-prev-room');
           await page.click('.btn-prev-room');
-          await page.waitForSelector('.booking .calendar .screen');
+          await page.waitForSelector('.booking .calendar .screen , .booking .calendar a');
         }
       }
     }
