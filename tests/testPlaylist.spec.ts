@@ -1,6 +1,6 @@
 import { test, expect, errors } from '@playwright/test';
 
-const BASE_URL = 'https://fr.bam-karaokebox.com';
+const BASE_URL = 'https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring';
 
 test.describe('Visibilité/Fonctionnement de la Playlist', () => {
 

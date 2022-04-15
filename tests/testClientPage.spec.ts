@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const BASE_URL = 'https://fr.bam-karaokebox.com/client/';
+const BASE_URL = 'https://fr.bam-karaokebox.com/client';
 
 test.describe('Page Client', () => {
 
@@ -15,7 +15,7 @@ test.describe('Page Client', () => {
 
   test.beforeEach(async ({ page }) => {
     // Connection en tant que client
-    await page.goto(BASE_URL + 'login');
+    await page.goto(BASE_URL + 'login?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring');
     await page.type('input[name=email]', process.env.AUTH_USER);
     await page.type('input[name=password]', process.env.AUTH_PASS);
     await page.keyboard.press('Enter').then(() => page.waitForNavigation());

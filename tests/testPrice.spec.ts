@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const BASE_URL = 'https://backend.bam-karaokebox.com/index.php/login_backend';
+const BASE_URL = 'https://backend.bam-karaokebox.com/index.php/login_backend?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring';
 
 const VENUES = [{
   name: 'Richer',
@@ -35,7 +35,6 @@ const VENUES = [{
   id: 8,
   floorPrice: 5,
 }];
-
 
 let listdata: any = [];
 const Erreur: any = [];
@@ -83,14 +82,14 @@ const checkPrice = async (page: any, venuePath: any) => {
     const ListeTime = [];
     const NumberSlot = document.querySelectorAll('div.slot.available').length;
     for (let i = 0; i < NumberSlot; i++) {
-      let StartHours = document.querySelectorAll('div.available input')[i].dataset.bookingFrom
-      let EndHours = document.querySelectorAll('div.available input')[i].dataset.bookingTo
-      StartHours = parseInt(StartHours[0] + StartHours[1] + StartHours[3] + StartHours[4] , 10)
-      EndHours = parseInt(EndHours[0] + EndHours[1] + EndHours[3] + EndHours[4] , 10) 
-      if (EndHours < 1000 && parseInt(StartHours,10) > 1400){
-        EndHours = EndHours + 2400
+      let StartHours = document.querySelectorAll('div.available input')[i].dataset.bookingFrom;
+      let EndHours = document.querySelectorAll('div.available input')[i].dataset.bookingTo;
+      StartHours = parseInt(StartHours[0] + StartHours[1] + StartHours[3] + StartHours[4] , 10);
+      EndHours = parseInt(EndHours[0] + EndHours[1] + EndHours[3] + EndHours[4] , 10);
+      if (EndHours < 1000 && parseInt(StartHours, 10) > 1400) {
+        EndHours = EndHours + 2400;
       }
-      ListeTime.push(JSON.stringify((EndHours - StartHours)/100));
+      ListeTime.push(JSON.stringify((EndHours - StartHours) / 100));
     }
     return (ListeTime);
     });
@@ -112,10 +111,10 @@ const checkPrice = async (page: any, venuePath: any) => {
     const Result = [RoomSlot, Creneau, PrixSalle, PrixPerson];
     const pricePerPerson = parseInt(PrixPerson[i], 10);
     const venueFloorPrice = parseInt(venuePath.floorPrice, 10);
-    const sessionTime = HourSlot[i][0]
+    const sessionTime = HourSlot[i][0];
     if (pricePerPerson < venueFloorPrice * sessionTime) {
       Erreur.push(`\n Error detected at ${venuePath.name} : ${Result[0][i]} ${Result[1][i]} for ${Result[2][i]} and ${Result[3][i]}
-      we expect to have a price superior at ${venueFloorPrice}€ per person \n`);
+       we expect to have a price superior at ${venueFloorPrice * sessionTime}€ per person \n`);
     }
   }
 };
@@ -156,8 +155,9 @@ const checkPriceforeachVenues = async (page: any, venuePath: any) => {
         await page.waitForSelector('.btn-prev-room');
 
         while (await page.isVisible('.btn-prev-room', {strict: true})) {
+          await page.waitForSelector('.btn-prev-room');
           await page.click('.btn-prev-room');
-          await page.waitForSelector('.booking .calendar .screen');
+          await page.waitForSelector('.booking .calendar .screen , .booking .calendar a');
         }
       }
     }
