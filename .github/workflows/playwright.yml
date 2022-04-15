@@ -23,8 +23,8 @@ jobs:
       env:
         AUTH_USER: ${{ secrets.AUTH_USER }}
         AUTH_PASS: ${{ secrets.AUTH_PASS }}
-        AUTH_USER: ${{ secrets.AUTH_USER_BACK }}
-        AUTH_PASS: ${{ secrets.AUTH_PASS_BACK }}
+        AUTH_USER_BACK: ${{ secrets.AUTH_USER_BACK }}
+        AUTH_PASS_BACK: ${{ secrets.AUTH_PASS_BACK }}
     - uses: actions/upload-artifact@v2
       if: always()
       with:
