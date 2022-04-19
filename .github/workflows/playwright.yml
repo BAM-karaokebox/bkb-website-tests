@@ -1,8 +1,5 @@
 name: Playwright Tests
 on:
-  push:
-    branches:
-      - BAM-986-test-as-a-backend-user-i-get-a-notification-as-soon-as-a-price-is-wrong
   schedule:
     - cron : '0 */3 * * *'
 jobs:
@@ -33,7 +30,7 @@ jobs:
         retention-days: 30
     - name: Report Status
       if: always()
-      uses: tomas/notify-slack-action@v1
+      uses: ravsamhq/notify-slack-action@v1
       with:
         status: ${{ job.status  }}
         notify_when: 'failure'
