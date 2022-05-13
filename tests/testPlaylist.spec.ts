@@ -2,7 +2,7 @@ import { test, expect, errors } from '@playwright/test';
 
 const BASE_URL = 'https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring';
 
-test.describe('Visibilité/Fonctionnement de la Playlist', () => {
+test.describe.parallel('Visibilité/Fonctionnement de la Playlist', () => {
 
   test.beforeEach(async ({ page }) => {
     // load homepage before each test
@@ -95,7 +95,8 @@ test.describe('Visibilité/Fonctionnement de la Playlist', () => {
 
     const ButtonReset = page.locator('#catalog .my-playlist__wrap .u-txt-right .button-reset');
     await expect(ButtonReset).toBeVisible();
-    await page.click('#catalog .my-playlist__wrap .u-txt-right .button-reset');
+    await page.isEnabled('#catalog .my-playlist__wrap .u-txt-right .button-reset');
+    await page.click('text=Vider la playlist');
 
     await page.waitForTimeout(5000);
 

@@ -7,12 +7,12 @@ import { devices } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 30 * 3000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      */
-    timeout: 5000,
+    timeout: 20000,
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -25,7 +25,7 @@ const config: PlaywrightTestConfig = {
   /* Shared settings for all the projects below. */
   use: {
     /* Maximum time each action such as `click()` can take. */
-    actionTimeout: 6000,
+    actionTimeout: 20000,
 
     /* Collect trace of each test. Check at the end of the report*/
     trace: 'on',

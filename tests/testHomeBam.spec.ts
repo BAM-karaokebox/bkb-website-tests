@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = 'https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring';
 
-test.describe('Homepage', () => {
+test.describe.parallel('Homepage', () => {
 
   test.beforeEach(async ({ page }) => {
     // load homepage before each test
