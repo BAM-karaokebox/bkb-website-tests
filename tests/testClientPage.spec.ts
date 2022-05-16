@@ -5,7 +5,7 @@ dotenv.config();
 
 const BASE_URL = 'https://fr.bam-karaokebox.com/client/';
 
-test.describe('Page Client', () => {
+test.describe.parallel('Page Client', () => {
 
   const locateElementWithSelectorAndCheckElementIsVisible = async (page, selector) => {
     const locator = page.locator(selector);

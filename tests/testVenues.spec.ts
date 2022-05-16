@@ -29,6 +29,8 @@ const checkVenuePageLayout = async (page, venuePath) => {
   await expect(Faqlocator).toBeVisible();
 };
 
-VENUES.forEach(venueName => {
-  test(`Venue: ${venueName}`, async ({ page }) => checkVenuePageLayout(page, `/etablissement/${venueName}`));
+test.describe.parallel('testVenues', () => {
+  VENUES.forEach(venueName => {
+    test(`Venue: ${venueName}`, async ({ page }) => checkVenuePageLayout(page, `/etablissement/${venueName}`));
+  });
 });
