@@ -9,9 +9,9 @@ test.describe.parallel('Homepage', () => {
     await page.goto(BASE_URL);
     // close modal container
     try {
-      await page.waitForSelector('.modal-close').then((btn) => page.click('.modal-close'));
+      await page.waitForSelector('.modal-content').then((btn) => page.click('.modal-content .modal-close'));
     } catch (ignoredError) {
-        /* no modal to bypass */
+        /* no modal to bypass*/
     }
   });
 
