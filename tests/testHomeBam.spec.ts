@@ -51,10 +51,4 @@ test.describe.parallel('Homepage', () => {
     const sociallocator = page.locator('#press');
     await expect(sociallocator).toBeVisible();
   });
-
-  test('Instagram Container', async ({ page }) => {
-    const instagramlocator = page.locator('#instagram');
-    await expect(instagramlocator).toBeVisible();
-  });
-
 });
