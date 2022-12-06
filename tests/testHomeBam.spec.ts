@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 const BASE_URL = 'https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring';
 
 test.describe.parallel('Homepage', () => {
-
   test.beforeEach(async ({ page }) => {
     // load homepage before each test
     await page.goto(BASE_URL);
@@ -11,7 +10,7 @@ test.describe.parallel('Homepage', () => {
     try {
       await page.waitForSelector('.modal-content').then((btn) => page.click('.modal-content .modal-close'));
     } catch (ignoredError) {
-        /* no modal to bypass*/
+      /* no modal to bypass*/
     }
   });
 
@@ -30,7 +29,7 @@ test.describe.parallel('Homepage', () => {
   });
 
   test('Check listed menu', async ({ page }) => {
-    const Listlocator = page.locator('.header__content--wrap');
+    const Listlocator = page.locator('.header__content--wrap *');
     await expect(Listlocator).toContainText(['Paris', 'Bordeaux', 'Madrid']);
     await expect(Listlocator).toContainText(['fr', 'en', 'es']);
   });
