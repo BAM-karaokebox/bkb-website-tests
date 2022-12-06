@@ -2,15 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = 'https://fr.bam-karaokebox.com';
 
-const VENUES = [
-  'richer',
-  'sentier',
-  'parmentier',
-  'madeleine',
-  'etoile',
-  'chartrons',
-  'recoletos',
-];
+const VENUES = ['richer', 'sentier', 'parmentier', 'madeleine', 'etoile', 'chartrons', 'recoletos'];
 
 const checkVenuePageLayout = async (page, venuePath) => {
   await page.goto(BASE_URL + venuePath + '?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring');
@@ -30,7 +22,7 @@ const checkVenuePageLayout = async (page, venuePath) => {
 };
 
 test.describe.parallel('testVenues', () => {
-  VENUES.forEach(venueName => {
+  VENUES.forEach((venueName) => {
     test(`Venue: ${venueName}`, async ({ page }) => checkVenuePageLayout(page, `/etablissement/${venueName}`));
   });
 });
