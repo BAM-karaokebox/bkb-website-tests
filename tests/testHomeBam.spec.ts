@@ -29,7 +29,7 @@ test.describe.parallel('Homepage', () => {
   });
 
   test('Check listed menu', async ({ page }) => {
-    const Listlocator = page.locator('.header__content--wrap');
+    const Listlocator = page.locator('.header__content--wrap *');
     await expect(Listlocator).toContainText(['Paris', 'Bordeaux', 'Madrid']);
     await expect(Listlocator).toContainText(['fr', 'en', 'es']);
   });
