@@ -52,8 +52,10 @@ test.describe.parallel('Page Client', () => {
   test('Page playlist', async ({ page }) => {
     await page.goto(BASE_URL + 'playlist');
     await locateElementWithSelectorAndCheckElementIsVisible(page, '.VueCarousel');
-    await locateElementWithSelectorAndCheckElementIsVisible(page, '.catalog__search');
-    await locateElementWithSelectorAndCheckElementIsVisible(page, '.js-playlist-songs');
+    await locateElementWithSelectorAndCheckElementIsVisible(page, '.catalog__search input[type=search]');
+    await page.type('.catalog__search input[type=search]', 'test');
+    await page.click('button.catalog__search-submit');
+    await locateElementWithSelectorAndCheckElementIsVisible(page, '.catalog__songs.js-playlist-songs');
     await locateElementWithSelectorAndCheckElementIsVisible(page, '.my-playlist');
   });
 
