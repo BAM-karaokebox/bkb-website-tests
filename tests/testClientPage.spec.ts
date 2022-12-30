@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Locator, Page } from "@playwright/test";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -6,8 +6,8 @@ dotenv.config();
 const BASE_URL = "https://fr.bam-karaokebox.com/client/";
 
 test.describe.parallel("Page Client", () => {
-  const locateElementWithSelectorAndCheckElementIsVisible = async (page, selector) => {
-    const locator = page.locator(selector);
+  const locateElementWithSelectorAndCheckElementIsVisible = async (page: Page, selector: string) => {
+    const locator: Locator = page.locator(selector);
     await expect(locator).toBeVisible();
     return locator;
   };
@@ -21,7 +21,7 @@ test.describe.parallel("Page Client", () => {
   });
 
   test.afterEach(async ({ page }) => {
-    page.close();
+    await page.close();
   });
 
   test("Page Information", async ({ page }) => {
