@@ -1,4 +1,4 @@
-import { test, expect, errors } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const BASE_URL = 'https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring';
 
@@ -8,7 +8,7 @@ test.describe.parallel('Visibilité/Fonctionnement de la Playlist', () => {
     await page.goto(BASE_URL);
     // close modal container
     try {
-      await page.waitForSelector('.modal-content').then((btn) => page.click('.modal-content .modal-close'));
+      await page.waitForSelector('.modal-content').then(() => page.click('.modal-content .modal-close'));
     } catch (ignoredError) {
       /* no modal to bypass*/
     }
@@ -32,12 +32,8 @@ test.describe.parallel('Visibilité/Fonctionnement de la Playlist', () => {
     const song = page.locator('.catalog__songs .song');
 
     // Compte le nombre de musique correspondant à la recherche
-    const Numbersong = await song.count();
-    console.log('Nombre de musique correspondant a la recherche');
-    console.log(Numbersong);
-    if (Numbersong === 0) {
-      return ErrorEvent;
-    }
+    const songCount = await song.count();
+    expect(songCount).not.toBe(0);
   });
 
   test("Vérification des éléments affichés lors d'une saisie erronée", async ({ page }) => {
@@ -49,12 +45,8 @@ test.describe.parallel('Visibilité/Fonctionnement de la Playlist', () => {
     const song = page.locator('.catalog__songs .song');
 
     // Compte le nombre de musique correspondant à la recherche
-    const Numbersong = await song.count();
-    console.log('Nombre de musique correspondant a la recherche erroné');
-    console.log(Numbersong);
-    if (Numbersong !== 0) {
-      return ErrorEvent;
-    }
+    const songCount = await song.count();
+    expect(songCount).toBe(0);
   });
 
   test('Visibilité du contenu de la playlist / de la recherche', async ({ page }) => {
@@ -78,12 +70,8 @@ test.describe.parallel('Visibilité/Fonctionnement de la Playlist', () => {
     // Verification que la musique soit ajouté a la playlist personnalisé
     await page.waitForSelector('.catalog__songs--client', { timeout: 30000 });
     const song = page.locator('.catalog__songs--client .song');
-    const NumberSongPlaylist = await song.count();
-    console.log('Musique dans la playlist après ajout');
-    console.log(NumberSongPlaylist);
-    if (NumberSongPlaylist === 0) {
-      return ErrorEvent;
-    }
+    const songCount = await song.count();
+    expect(songCount).not.toBe(0);
   });
 
   test('Visibilité/Fonctionnement du boutton reset', async ({ page }) => {
@@ -99,14 +87,10 @@ test.describe.parallel('Visibilité/Fonctionnement de la Playlist', () => {
 
     await page.waitForTimeout(5000);
 
-    // Vérification que la playlist soit vidé
+    // Vérification que la playlist soit vidée
     await page.waitForSelector('#catalog .my-playlist__wrap .catalog__songs--client', { timeout: 20000 });
     const song = page.locator('.my-playlist__wrap .catalog__songs--client .flip-list .song');
-    const NumberSongPlaylist = await song.count();
-    console.log("Nombre de musique dans la playlist après l'avoir vidé");
-    console.log(NumberSongPlaylist);
-    if (NumberSongPlaylist !== 0) {
-      return ErrorEvent;
-    }
+    const songCount = await song.count();
+    expect(songCount).toBe(0);
   });
 });
