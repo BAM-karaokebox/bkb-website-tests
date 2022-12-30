@@ -1,8 +1,9 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
+    commonjs: true,
     es6: true,
+    node: true,
   },
   extends: [
     "plugin:editorconfig/all",
@@ -40,22 +41,22 @@ module.exports = {
       "error",
       {
         types: {
-          Object: {
+          "Object": {
             message: "Avoid using the `Object` type. Did you mean `object`?",
           },
-          Function: {
+          "Function": {
             message: "Avoid using the `Function` type. Prefer a specific function type, like `() => void`.",
           },
-          Boolean: {
+          "Boolean": {
             message: "Avoid using the `Boolean` type. Did you mean `boolean`?",
           },
-          Number: {
+          "Number": {
             message: "Avoid using the `Number` type. Did you mean `number`?",
           },
-          String: {
+          "String": {
             message: "Avoid using the `String` type. Did you mean `string`?",
           },
-          Symbol: {
+          "Symbol": {
             message: "Avoid using the `Symbol` type. Did you mean `symbol`?",
           },
         },
