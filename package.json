@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "fmt": "prettier --write **/*.{ts,js}",
     "lint": "eslint . --ext ts,js .",
-    "lint-fix": "eslint --fix . --ext ts,js .",
+    "lint:fix": "eslint --fix . --ext ts,js .",
     "prepare": "husky install"
   },
   "keywords": [],
