@@ -81,7 +81,7 @@ test.describe.parallel("Visibilité/Fonctionnement de la Playlist", () => {
     await page.click(".song__controls");
 
     const ButtonReset = page.locator("#catalog .my-playlist__wrap .u-txt-right .button-reset");
-    await expect(ButtonReset).toBeVisible();
+    await expect(ButtonReset).toBeVisible({ timeout: 20000 });
     await page.isEnabled("#catalog .my-playlist__wrap .u-txt-right .button-reset");
     await page.click("text=Vider la playlist");
 
