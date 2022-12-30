@@ -8,7 +8,7 @@ test.describe.parallel('Homepage', () => {
     await page.goto(BASE_URL);
     // close modal container
     try {
-      await page.waitForSelector('.modal-content').then((btn) => page.click('.modal-content .modal-close'));
+      await page.waitForSelector('.modal-content').then(() => page.click('.modal-content .modal-close'));
     } catch (ignoredError) {
       /* no modal to bypass*/
     }
@@ -24,7 +24,7 @@ test.describe.parallel('Homepage', () => {
     await expect(ReserverBoutton).toContainText('Réserver');
   });
 
-  test('Click burger', async ({ page, context }) => {
+  test('Click burger', async ({ page }) => {
     await page.click('.burger__wrap');
   });
 
@@ -46,7 +46,7 @@ test.describe.parallel('Homepage', () => {
     await expect(AboutUsText).toBeVisible();
   });
 
-  test('Social Container', async ({ page, context }) => {
+  test('Social Container', async ({ page }) => {
     const sociallocator = page.locator('#press');
     await expect(sociallocator).toBeVisible();
   });
