@@ -85,8 +85,6 @@ test.describe.parallel("Visibilité/Fonctionnement de la Playlist", () => {
     await page.isEnabled("#catalog .my-playlist__wrap .u-txt-right .button-reset");
     await page.click("text=Vider la playlist");
 
-    await page.waitForTimeout(5000);
-
     // Vérification que la playlist soit vidée
     await page.waitForSelector("#catalog .my-playlist__wrap .catalog__songs--client", { timeout: 20000 });
     const song = page.locator(".my-playlist__wrap .catalog__songs--client .flip-list .song");

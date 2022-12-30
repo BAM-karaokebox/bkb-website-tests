@@ -1,12 +1,11 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 
 const BASE_URL = "https://fr.bam-karaokebox.com";
 
 const VENUES = ["richer", "sentier", "parmentier", "madeleine", "etoile", "chartrons", "recoletos"];
 
-const checkVenuePageLayout = async (page, venuePath) => {
+const checkVenuePageLayout = async (page: Page, venuePath: string) => {
   await page.goto(BASE_URL + venuePath + "?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring");
-  page.waitForTimeout(20000);
   const Presentationlocator = page.locator(".hero");
   await expect(Presentationlocator).toBeVisible();
   const Roomlocator = page.locator(".rooms");
