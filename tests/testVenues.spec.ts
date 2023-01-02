@@ -56,7 +56,7 @@ const checkVenuePageLayout = async (page: Page, venue: Venue) => {
   });
 };
 
-test.describe.parallel("testVenues", () => {
+test.describe.parallel("BKB > Venues", () => {
   VENUES.forEach((venue: Venue) => {
     test(`Venue: ${venue.name}`, async ({ page }) => checkVenuePageLayout(page, venue));
   });

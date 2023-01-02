@@ -1,94 +1,84 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
+import { loadHomePage } from "./utils/home.utils";
 
-const BASE_URL = "https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring";
+const SONG_QUERY_VALID = "Au dd";
+const SONG_QUERY_INVALID = "cjebnvjiznevpizenbvipjzbnpizebnpi";
 
-test.describe.parallel("Visibilité/Fonctionnement de la Playlist", () => {
-  test.beforeEach(async ({ page }) => {
-    // load homepage before each test
-    await page.goto(BASE_URL);
-    // close modal container
-    try {
-      await page.waitForSelector(".modal-content").then(() => page.click(".modal-content .modal-close"));
-    } catch (ignoredError) {
-      /* no modal to bypass*/
-    }
-  });
+test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
+  const searchForSong = async (page: Page, song: string) => {
+    await page.fill('.catalog [type="search"]', song);
+    await page.keyboard.press("Enter");
+  };
 
-  test("Visibilité des playlist existante", async ({ page }) => {
+  const checkCurrentPersonalizedPlaylistIsClear = async (page: Page) => {
+    await page.waitForSelector(".catalog__songs--client", { timeout: 30000 });
+    const songs = page.locator(".catalog__songs--client .song");
+    await expect(songs).toBeHidden();
+  };
+
+  test.beforeEach(async ({ page }) => loadHomePage(page, "fr"));
+
+  test("As a web user browsing the homepage, I can see the default playlists", async ({ page }) => {
     const PlaylistContainer = page.locator(".catalog__thumbs");
     await expect(PlaylistContainer).toBeVisible();
   });
 
-  test("Visibilité/Fonctionnement de la barre de recherche lors d'une saisie valide", async ({ page }) => {
+  test("As a web user browsing the homepage, I can search for an existing song", async ({ page }) => {
+    await searchForSong(page, SONG_QUERY_VALID);
+
+    // Check we found at least some matching songs
+    const songs = page.locator(".catalog__songs .song");
+    await expect(songs).toBeVisible();
+    const songCount = await songs.count();
+    expect(songCount).not.toBe(0);
+  });
+
+  test("As a web user browsing the homepage, I can search for a non-existing song", async ({ page }) => {
+    await searchForSong(page, SONG_QUERY_INVALID);
+
+    // Check we couldn't find this invalid song
+    await page.waitForSelector(".catalog__songs", { timeout: 30000 });
+    const songs = page.locator(".catalog__songs .song");
+    const songCount = await songs.count();
+    expect(songCount).toBe(0);
+  });
+
+  test("As a web user, I can see the catalog search area", async ({ page }) => {
     const SearchContainer = page.locator(".catalog__search");
     await expect(SearchContainer).toBeVisible();
+  });
 
-    // Saisie de la chanson souhaité
-    await page.fill('[type="search"]', "Au dd");
-    await page.keyboard.press("Enter");
+  test("As a web user, I can add songs to the session's personalized playlist", async ({ page }) => {
+    await searchForSong(page, SONG_QUERY_VALID);
 
-    // Identification de la balise contenant les musiques
-    await page.waitForSelector(".catalog__songs .song", { timeout: 30000 });
-    const song = page.locator(".catalog__songs .song");
+    // check playlist is clear again
+    await checkCurrentPersonalizedPlaylistIsClear(page);
 
-    // Compte le nombre de musique correspondant à la recherche
-    const songCount = await song.count();
+    // add song to playlist
+    await page.click(".song__controls .u-px");
+
+    // check that a song was added to the personalized playlist
+    const songs = page.locator(".catalog__songs--client .song");
+    await expect(songs).toBeVisible();
+    const songCount = await songs.count();
     expect(songCount).not.toBe(0);
   });
 
-  test("Vérification des éléments affichés lors d'une saisie erronée", async ({ page }) => {
-    // Saisie d'un nom invalide
-    await page.fill('[type="search"]', "cjebnvjiznevpizenbvipjzbnpizebnpi");
-    await page.keyboard.press("Enter");
+  test("As a web user, I can clear the session's personalized playlist", async ({ page }) => {
+    await searchForSong(page, SONG_QUERY_VALID);
 
-    await page.waitForSelector(".catalog__songs", { timeout: 30000 });
-    const song = page.locator(".catalog__songs .song");
+    // check playlist is clear at beginning
+    await checkCurrentPersonalizedPlaylistIsClear(page);
 
-    // Compte le nombre de musique correspondant à la recherche
-    const songCount = await song.count();
-    expect(songCount).toBe(0);
-  });
+    // add song to playlist
+    await page.click(".song__controls .u-px");
 
-  test("Visibilité du contenu de la playlist / de la recherche", async ({ page }) => {
-    await page.fill('[type="search"]', "Au dd");
-    await page.keyboard.press("Enter");
+    // reset playlist
+    await expect(page.locator(".my-playlist__wrap .u-txt-right .button-reset")).toBeVisible();
+    await page.click(".my-playlist__wrap .u-txt-right .button-reset");
 
-    const SongContainer = page.locator(".catalog__songs--home");
-    await expect(SongContainer).toBeVisible();
-  });
-
-  test("Visibilité du contenu de la playlist personnalisé", async ({ page }) => {
-    await page.fill('[type="search"]', "Au dd");
-    await page.keyboard.press("Enter");
-
-    const SongClient = page.locator(".catalog__songs--client");
-    await expect(SongClient).toBeVisible();
-
-    // Ajout de la musique
-    await page.click(".song__controls");
-
-    // Verification que la musique soit ajouté a la playlist personnalisé
-    await page.waitForSelector(".catalog__songs--client", { timeout: 30000 });
-    const song = page.locator(".catalog__songs--client .song");
-    const songCount = await song.count();
-    expect(songCount).not.toBe(0);
-  });
-
-  test("Visibilité/Fonctionnement du boutton reset", async ({ page }) => {
-    await page.fill('[type="search"]', "Au dd");
-    await page.keyboard.press("Enter");
-
-    await page.click(".song__controls");
-
-    const ButtonReset = page.locator("#catalog .my-playlist__wrap .u-txt-right .button-reset");
-    await expect(ButtonReset).toBeVisible({ timeout: 20000 });
-    await page.isEnabled("#catalog .my-playlist__wrap .u-txt-right .button-reset");
-    await page.click("text=Vider la playlist");
-
-    // Vérification que la playlist soit vidée
-    await page.waitForSelector("#catalog .my-playlist__wrap .catalog__songs--client", { timeout: 20000 });
-    const song = page.locator(".my-playlist__wrap .catalog__songs--client .flip-list .song");
-    const songCount = await song.count();
-    expect(songCount).toBe(0);
+    // check playlist is clear again
+    await expect(page.locator(".my-playlist__wrap .u-txt-right .button-reset")).toBeHidden();
+    await checkCurrentPersonalizedPlaylistIsClear(page);
   });
 });

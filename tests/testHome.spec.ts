@@ -1,22 +1,12 @@
 import { test, expect } from "@playwright/test";
+import { loadHomePage } from "./utils/home.utils";
 
-const BASE_URL = "https://fr.bam-karaokebox.com?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring";
-
-test.describe.parallel("Homepage", () => {
-  test.beforeEach(async ({ page }) => {
-    // load homepage before each test
-    await page.goto(BASE_URL);
-    // close modal container
-    try {
-      await page.waitForSelector(".modal-content").then(() => page.click(".modal-content .modal-close"));
-    } catch (ignoredError) {
-      /* no modal to bypass*/
-    }
-  });
+test.describe.parallel("BKB > Homepage", () => {
+  test.beforeEach(async ({ page }) => loadHomePage(page, "fr"));
 
   test("Visibilité du logo", async ({ page }) => {
     const imagelocator = page.locator(".header__brand");
-    await expect(imagelocator).toBeVisible("http://www.w3.org/2000/svg");
+    await expect(imagelocator).toBeVisible();
   });
 
   test("Boutton Réserver en bordure ", async ({ page }) => {
