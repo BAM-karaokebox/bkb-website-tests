@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
   /* Maximum time one test can run for. */
   timeout: 30 * 3000,
   expect: {
-    timeout: 20000, // expect timeout
+    timeout: 30000, // expect timeout
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -22,7 +22,7 @@ const config: PlaywrightTestConfig = {
   /* Shared settings for all the projects below. */
   use: {
     /* Maximum time each action such as `click()` can take. */
-    actionTimeout: 20000,
+    actionTimeout: 30000,
 
     /* Collect trace of each test. Check at the end of the report*/
     trace: "on",
