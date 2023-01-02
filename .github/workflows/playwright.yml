@@ -1,4 +1,4 @@
-name: BAM Website Frontend Tests
+name: BKB Website Test Suite
 
 on:
   schedule:
@@ -12,16 +12,17 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
-    - name: Install dependencies
+    - name: Install Dependencies
       run: npm ci
     - name: Install Playwright
       run: npx playwright install --with-deps
-    - name: Run Playwright tests
+    - name: Run Playwright Tests
       run: npx playwright test
       env:
         AUTH_USER: ${{ secrets.AUTH_USER }}
         AUTH_PASS: ${{ secrets.AUTH_PASS }}
-    - uses: actions/upload-artifact@v3
+    - name: Upload Playwright Report
+      uses: actions/upload-artifact@v3
       if: always()
       with:
         name: playwright-report
@@ -29,11 +30,13 @@ jobs:
         retention-days: 30
     - name: Report Status
       if: always()
-      uses: ravsamhq/notify-slack-action@v1
+      uses: ravsamhq/notify-slack-action@v2
       with:
         status: ${{ job.status  }}
         notify_when: 'failure'
-        notification_title: '{workflow} has {status_message}'
-        message_format: ' Test {status_message} in BAM-karaokebox/website-tests: <{run_url}|check report>'
+        notification_title: '{status_message}: {repo} / {workflow}'
+        message_format: '{emoji} *{status_message}*: { repo } (<{run_url}|report>)'
+        footer: "<{repo_url}|{View Repository}> | <{workflow_url}|View Workflow>"
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_URL  }}
+
