@@ -9,17 +9,14 @@ const config: PlaywrightTestConfig = {
   /* Maximum time one test can run for. */
   timeout: 30 * 3000,
   expect: {
-    /**
-     * Maximum time expect() should wait for the condition to be met.
-     */
-    timeout: 20000,
+    timeout: 20000, // expect timeout
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 2,
+  /* keep only 1 worker as Playwright's latest version as some issues with multiple workers */
+  workers: 1,
+  // workers: process.env.CI ? 1 : '25%',
   /* Reporter to use. */
   reporter: "html",
   /* Shared settings for all the projects below. */
