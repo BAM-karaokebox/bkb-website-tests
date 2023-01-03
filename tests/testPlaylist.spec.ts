@@ -16,7 +16,7 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
     await expect(songs).toBeHidden();
   };
 
-  test.beforeEach(async ({ page }) => loadHomePage(page, "fr"));
+  test.beforeEach(async ({ page, browser }) => loadHomePage(page, browser));
 
   test("As a web user browsing the homepage, I can see the default playlists", async ({ page }) => {
     const PlaylistContainer = page.locator(".catalog__thumbs");
@@ -71,11 +71,13 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
     await checkCurrentPersonalizedPlaylistIsClear(page);
 
     // add song to playlist
-    await page.click(".song__controls .u-px");
+    const addToPlaylistButton = page.locator(".song__controls .u-px");
+    await addToPlaylistButton.click();
 
     // reset playlist
-    await expect(page.locator(".my-playlist__wrap .u-txt-right .button-reset")).toBeVisible();
-    await page.click(".my-playlist__wrap .u-txt-right .button-reset");
+    const resetButton = page.locator(".my-playlist__wrap .u-txt-right .button-reset");
+    await expect(resetButton).toBeVisible();
+    await resetButton.click();
 
     // check playlist is clear again
     await expect(page.locator(".my-playlist__wrap .u-txt-right .button-reset")).toBeHidden();

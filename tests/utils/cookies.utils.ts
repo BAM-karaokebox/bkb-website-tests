@@ -1,19 +1,21 @@
-import { Browser } from "@playwright/test";
+import { Page } from "@playwright/test";
 
-export const setCookies = async (browser: Browser) => {
-  const browserContext = await browser.newContext();
-  await browserContext.addCookies([
-    {
-      name: "axeptio_cookies",
-      value: JSON.stringify({
-        $$token: "hp783i1j78thjricl2l4xc",
-        $$date: new Date().toISOString(),
-        facebook_pixel: true,
-        google_analytics: true,
-        $$completed: true,
-      }),
-      path: "/",
-      domain: "bam-karaokebox.com",
-    },
-  ]);
+export const openCookiesBanner = async (page: Page) => {
+  const axeptioWidget = page.locator("id=axeptio_widget");
+  if (!(await axeptioWidget.isVisible())) {
+    await page.locator("id=axeptio_main_button").click();
+  }
+};
+
+export const acceptCookies = async (page: Page) => {
+  try {
+    const acceptCookiesButton = page.locator("id=axeptio_btn_acceptAll");
+
+    if (!(await acceptCookiesButton.isVisible())) {
+      await openCookiesBanner(page);
+    }
+    await acceptCookiesButton.click();
+  } catch (ignoredError) {
+    /* no modal to bypass*/
+  }
 };

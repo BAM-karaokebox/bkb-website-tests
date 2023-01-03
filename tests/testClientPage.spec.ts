@@ -1,5 +1,7 @@
 import { test, expect, Locator, Page } from "@playwright/test";
 import dotenv from "dotenv";
+import { login } from "./utils/auth.utils";
+import { acceptCookies } from "./utils/cookies.utils";
 
 dotenv.config();
 
@@ -13,11 +15,8 @@ test.describe.parallel("BKB > My Account", () => {
   };
 
   test.beforeEach(async ({ page }) => {
-    // Connection en tant que client
-    await page.goto(BASE_URL + "login?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring");
-    await page.type("input[name=email]", process.env.AUTH_USER as string);
-    await page.type("input[name=password]", process.env.AUTH_PASS as string);
-    await page.keyboard.press("Enter").then(() => page.waitForNavigation());
+    await login(page);
+    await acceptCookies(page);
   });
 
   test.afterEach(async ({ page }) => {
