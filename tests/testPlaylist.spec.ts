@@ -11,7 +11,7 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
   };
 
   const checkCurrentPersonalizedPlaylistIsClear = async (page: Page) => {
-    await page.waitForSelector(".catalog__songs--client", { timeout: 30000 });
+    await page.waitForSelector(".catalog__songs--client");
     const songs = page.locator(".catalog__songs--client .song");
     await expect(songs).toBeHidden();
   };
@@ -37,7 +37,7 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
     await searchForSong(page, SONG_QUERY_INVALID);
 
     // Check we couldn't find this invalid song
-    await page.waitForSelector(".catalog__songs", { timeout: 30000 });
+    await page.waitForSelector(".catalog__songs");
     const songs = page.locator(".catalog__songs .song");
     const songCount = await songs.count();
     expect(songCount).toBe(0);
