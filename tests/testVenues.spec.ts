@@ -1,4 +1,5 @@
 import { test, expect, Page, Locator } from "@playwright/test";
+import { acceptCookies } from "./utils/cookies.utils";
 
 const BASE_URL = "https://fr.bam-karaokebox.com";
 const TEST_MARKER_SUFFIX = "?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring";
@@ -57,6 +58,8 @@ const checkVenuePageLayout = async (page: Page, venue: Venue) => {
 };
 
 test.describe.parallel("BKB > Venues", () => {
+  test.beforeEach(async ({ page }) => await acceptCookies(page));
+
   VENUES.forEach((venue: Venue) => {
     test(`Venue: ${venue.name}`, async ({ page }) => checkVenuePageLayout(page, venue));
   });

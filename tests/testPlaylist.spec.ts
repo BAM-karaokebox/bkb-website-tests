@@ -11,12 +11,12 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
   };
 
   const checkCurrentPersonalizedPlaylistIsClear = async (page: Page) => {
-    await page.waitForSelector(".catalog__songs--client", { timeout: 30000 });
+    await page.waitForSelector(".catalog__songs--client");
     const songs = page.locator(".catalog__songs--client .song");
     await expect(songs).toBeHidden();
   };
 
-  test.beforeEach(async ({ page }) => loadHomePage(page, "fr"));
+  test.beforeEach(async ({ page, browser }) => loadHomePage(page, browser));
 
   test("As a web user browsing the homepage, I can see the default playlists", async ({ page }) => {
     const PlaylistContainer = page.locator(".catalog__thumbs");
@@ -37,7 +37,7 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
     await searchForSong(page, SONG_QUERY_INVALID);
 
     // Check we couldn't find this invalid song
-    await page.waitForSelector(".catalog__songs", { timeout: 30000 });
+    await page.waitForSelector(".catalog__songs");
     const songs = page.locator(".catalog__songs .song");
     const songCount = await songs.count();
     expect(songCount).toBe(0);
@@ -71,11 +71,13 @@ test.describe.parallel("BKB > Homepage / Catalog & Playlist", () => {
     await checkCurrentPersonalizedPlaylistIsClear(page);
 
     // add song to playlist
-    await page.click(".song__controls .u-px");
+    const addToPlaylistButton = page.locator(".song__controls .u-px");
+    await addToPlaylistButton.click();
 
     // reset playlist
-    await expect(page.locator(".my-playlist__wrap .u-txt-right .button-reset")).toBeVisible();
-    await page.click(".my-playlist__wrap .u-txt-right .button-reset");
+    const resetButton = page.locator(".my-playlist__wrap .u-txt-right .button-reset");
+    await expect(resetButton).toBeVisible();
+    await resetButton.click();
 
     // check playlist is clear again
     await expect(page.locator(".my-playlist__wrap .u-txt-right .button-reset")).toBeHidden();

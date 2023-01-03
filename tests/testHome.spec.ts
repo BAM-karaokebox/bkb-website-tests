@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { loadHomePage } from "./utils/home.utils";
 
 test.describe.parallel("BKB > Homepage", () => {
-  test.beforeEach(async ({ page }) => loadHomePage(page, "fr"));
+  test.beforeEach(async ({ page, browser }) => loadHomePage(page, browser));
 
   test("Visibilité du logo", async ({ page }) => {
     const imagelocator = page.locator(".header__brand");

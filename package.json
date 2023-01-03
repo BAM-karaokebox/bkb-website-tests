@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "fmt": "prettier --write **/*.{ts,js}",
+    "fmt": "prettier --write '**/*.{ts,js}'",
     "lint": "eslint . --ext ts,js .",
     "lint:fix": "eslint --fix . --ext ts,js .",
     "prepare": "husky install"
@@ -14,10 +14,10 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.29.1",
-    "@typescript-eslint/eslint-plugin": "^5.47.1",
-    "@typescript-eslint/parser": "^5.47.1",
-    "eslint": "^8.30.0",
-    "eslint-config-prettier": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.0",
+    "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-editorconfig": "^4.0.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsdoc": "^39.6.4",
@@ -28,7 +28,7 @@
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.1",
     "prettier-eslint": "^15.0.1",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.4"
   },
   "dependencies": {
     "dotenv": "^16.0.3"
