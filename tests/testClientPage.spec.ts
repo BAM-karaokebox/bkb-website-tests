@@ -2,6 +2,7 @@ import { test, expect, Locator, Page } from "@playwright/test";
 import dotenv from "dotenv";
 import { login } from "./utils/auth.utils";
 import { acceptCookies } from "./utils/cookies.utils";
+import { goto } from "./utils/navigation.utils";
 
 dotenv.config();
 
@@ -12,6 +13,10 @@ test.describe.parallel("BKB > My Account", () => {
     const locator: Locator = page.locator(selector);
     await expect(locator).toBeVisible();
     return locator;
+  };
+
+  const loadPage = async (page: Page, subpath: string) => {
+    await goto(page, `${BASE_URL}${subpath}`);
   };
 
   test.beforeEach(async ({ page }) => {
@@ -30,26 +35,26 @@ test.describe.parallel("BKB > My Account", () => {
   });
 
   test("Page Authentification", async ({ page }) => {
-    await page.goto(BASE_URL + "informations-personnelles");
+    await loadPage(page, "informations-personnelles");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".auth");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".client-menu");
   });
 
   test("Page Sessions", async ({ page }) => {
-    await page.goto(BASE_URL + "sessions");
+    await loadPage(page, "sessions");
     await locateElementWithSelectorAndCheckElementIsVisible(page, "#client");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".alert");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".client-menu");
   });
 
   test("Page Fidélité", async ({ page }) => {
-    await page.goto(BASE_URL + "fidelite");
+    await loadPage(page, "fidelite");
     await locateElementWithSelectorAndCheckElementIsVisible(page, "#client");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".client-menu");
   });
 
   test("Page playlist", async ({ page }) => {
-    await page.goto(BASE_URL + "playlist");
+    await loadPage(page, "playlist");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".VueCarousel");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".catalog__search input[type=search]");
     await page.type(".catalog__search input[type=search]", "test");
@@ -59,7 +64,7 @@ test.describe.parallel("BKB > My Account", () => {
   });
 
   test("Page Médias", async ({ page }) => {
-    await page.goto(BASE_URL + "medias");
+    await loadPage(page, "medias");
     await locateElementWithSelectorAndCheckElementIsVisible(page, "#client");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".alert");
     await locateElementWithSelectorAndCheckElementIsVisible(page, ".client-menu");

@@ -1,8 +1,8 @@
 import { test, expect, Page, Locator } from "@playwright/test";
 import { acceptCookies } from "./utils/cookies.utils";
+import { goto } from "./utils/navigation.utils";
 
 const BASE_URL = "https://fr.bam-karaokebox.com";
-const TEST_MARKER_SUFFIX = "?utm_source=bkb-website-tests&utm_medium=qa-bot&utm_campaign=monitoring";
 
 interface Venue {
   name: string;
@@ -50,7 +50,7 @@ const checkForVisibleElement = async (page: Page, locator: string) => {
 };
 
 const checkVenuePageLayout = async (page: Page, venue: Venue) => {
-  await page.goto(BASE_URL + `/etablissement/${venue.name}` + TEST_MARKER_SUFFIX);
+  await goto(page, `${BASE_URL}/etablissement/${venue.name}`);
 
   venue.elements.forEach((selector) => {
     void checkForVisibleElement(page, selector);
