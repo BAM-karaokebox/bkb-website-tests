@@ -20,6 +20,9 @@ const config: PlaywrightTestConfig = {
     /* Maximum time each action such as `click()` can take. */
     actionTimeout: 10000,
 
+    /* Maximum time each nagivation action, such as `goto()`, can take. */
+    navigationTimeout: 20000,
+
     /* Collect trace of each test. Check at the end of the report*/
     trace: "on",
   },
